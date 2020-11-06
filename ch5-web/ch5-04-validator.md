@@ -6,7 +6,7 @@
 
 *图 5-10 validator流程*
 
-实际上这是一个语言无关的场景，需要进行字段校验的情况有很多，Web系统的Form或JSON提交只是一个典型的例子。我们用Go来写一个类似上图的校验示例。然后研究怎么一步步对其进行改进。
+这其实是一个语言无关的场景，需要进行字段校验的情况有很多，Web系统的Form或JSON提交只是一个典型的例子。我们用Go来写一个类似上图的校验示例。然后研究怎么一步步对其进行改进。
 
 ## 5.4.1 重构请求校验函数
 
@@ -79,8 +79,10 @@ func register(req RegisterReq) error{
 
 > https://github.com/go-playground/validator
 
+使用 `go get github.com/go-playground/validator/v10` 可以下载 validator 库。
+
 ```go
-import "gopkg.in/go-playground/validator.v9"
+import "github.com/go-playground/validator/v10"
 
 type RegisterReq struct {
 	// 字符串的 gt=0 表示长度必须 > 0，gt = greater than
@@ -93,9 +95,9 @@ type RegisterReq struct {
 	Email          string   `validate:"email"`
 }
 
-validate := validator.New()
+var validate = validator.New()
 
-func validate(req RegisterReq) error {
+func validateFunc(req RegisterReq) error {
 	err := validate.Struct(req)
 	if err != nil {
 		doSomething()
@@ -120,7 +122,7 @@ var req = RegisterReq {
 	Email          : "alex@abc.com",
 }
 
-err := validate(req)
+err := validateFunc(req)
 fmt.Println(err)
 
 // Key: 'RegisterReq.PasswordRepeat' Error:Field validation for
